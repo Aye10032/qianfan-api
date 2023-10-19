@@ -61,11 +61,11 @@ public class AccessToken {
             Gson gson = new Gson();
             JsonObject object = gson.fromJson(response.body().string(), JsonObject.class);
 
-            System.out.println(object.get("access_token").getAsString());
+
+            return object.get("access_token").getAsString();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return "";
     }
 
 }
