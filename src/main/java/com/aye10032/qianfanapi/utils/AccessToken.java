@@ -3,8 +3,12 @@ package com.aye10032.qianfanapi.utils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import okhttp3.*;
+import org.yaml.snakeyaml.Yaml;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * @program: qianfan-api
@@ -16,8 +20,18 @@ import java.io.IOException;
 public class AccessToken {
 
     public static String GetToken(String filePath){
+        Yaml yaml = new Yaml();
+        try {
+            Map<String, Object> config = yaml.load(new FileInputStream(filePath));
 
-        return "";
+            String client_id = config.get("client_id").toString();
+            String client_secret = config.get("client_secret").toString();
+
+            return GetToken(client_id, client_secret);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     public static String GetToken(String clientID, String clientSecret){
