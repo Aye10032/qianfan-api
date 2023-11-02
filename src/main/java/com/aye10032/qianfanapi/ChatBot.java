@@ -1,9 +1,9 @@
 package com.aye10032.qianfanapi;
 
 import com.aye10032.qianfanapi.data.Data;
-import com.aye10032.qianfanapi.data.Message;
-import com.aye10032.qianfanapi.data.ReactiveBody;
-import com.aye10032.qianfanapi.data.RequestObject;
+import com.aye10032.qianfanapi.data.qianfan.Message;
+import com.aye10032.qianfanapi.data.qianfan.ReactiveBody;
+import com.aye10032.qianfanapi.data.qianfan.RequestObject;
 import com.aye10032.qianfanapi.utils.AccessToken;
 import com.aye10032.qianfanapi.utils.JsonUtil;
 import lombok.Getter;
@@ -11,10 +11,10 @@ import lombok.Setter;
 import okhttp3.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.aye10032.qianfanapi.data.Data.*;
+import static com.aye10032.qianfanapi.utils.JsonUtil.json2reactiveBody;
 import static com.aye10032.qianfanapi.utils.MessageUtil.newMessage;
 
 /**
@@ -48,7 +48,7 @@ public class ChatBot {
         }
     }
 
-    public ReactiveBody newChat(String msg){
+    public ReactiveBody newChat(String msg) {
         List<Message> messages = newMessage(msg);
 
         RequestObject object = new RequestObject();
@@ -58,7 +58,7 @@ public class ChatBot {
         return newChat(object);
     }
 
-    public ReactiveBody newChat(String msg, float temperature, float top_p, float penalty_score, String system, String user_id){
+    public ReactiveBody newChat(String msg, float temperature, float top_p, float penalty_score, String system, String user_id) {
         List<Message> messages = newMessage(msg);
 
         RequestObject object = new RequestObject(messages, useStream(), temperature, top_p, penalty_score, system, user_id);
@@ -66,9 +66,10 @@ public class ChatBot {
         return newChat(object);
     }
 
-    public ReactiveBody newChat(RequestObject object){
+    public ReactiveBody newChat(RequestObject object) {
         MediaType mediaType = MediaType.parse("application/json");
         RequestBody body = RequestBody.create(JsonUtil.entity2json(object), mediaType);
+
         Request request = new Request.Builder()
                 .url("https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/eb-instant?access_token=" + getAccessToken())
                 .method("POST", body)
@@ -76,12 +77,13 @@ public class ChatBot {
                 .build();
         try {
             Response response = HTTP_CLIENT.newCall(request).execute();
-            System.out.println(response.body().string());
+            String result = response.body().string();
+
+            return json2reactiveBody(result);
+//            return new ReactiveBody();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-        return new ReactiveBody();
     }
 
     private boolean useStream() {

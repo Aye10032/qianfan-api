@@ -1,4 +1,4 @@
-package com.aye10032.qianfanapi.data;
+package com.aye10032.qianfanapi.data.qianfan;
 
 import lombok.*;
 import lombok.Data;

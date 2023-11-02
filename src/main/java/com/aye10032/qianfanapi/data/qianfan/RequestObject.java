@@ -1,4 +1,4 @@
-package com.aye10032.qianfanapi.data;
+package com.aye10032.qianfanapi.data.qianfan;
 
 import lombok.*;
 import lombok.Data;
@@ -26,6 +26,5 @@ public class RequestObject {
     private Float penalty_score;
     private String system;
     private String user_id;
-
 
 }

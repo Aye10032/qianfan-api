@@ -1,6 +1,6 @@
 package com.aye10032.qianfanapi.utils;
 
-import com.aye10032.qianfanapi.data.Message;
+import com.aye10032.qianfanapi.data.qianfan.Message;
 
 import java.util.ArrayList;
 import java.util.List;
