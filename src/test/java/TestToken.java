@@ -19,7 +19,9 @@ public class TestToken {
 //        String token = AccessToken.GetToken("token.yaml");
 //        System.out.println(token);
         ChatBot bot = new ChatBot(REACTIVE);
-        ReactiveBody body = bot.newChat("你好");
+        ReactiveBody body = bot.newChat("假设你叫AA");
+        System.out.println(body.getResult());
+        body = bot.nextChat("现在请模拟进行一段自我介绍");
         System.out.println(body.getResult());
     }
 

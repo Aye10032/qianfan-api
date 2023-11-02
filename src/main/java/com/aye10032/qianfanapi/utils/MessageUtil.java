@@ -5,6 +5,7 @@ import com.aye10032.qianfanapi.data.qianfan.Message;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.aye10032.qianfanapi.data.Data.ASSISTANT;
 import static com.aye10032.qianfanapi.data.Data.USER;
 
 /**
@@ -16,16 +17,6 @@ import static com.aye10032.qianfanapi.data.Data.USER;
 
 public class MessageUtil {
 
-    public static List<Message> newMessage(String msg) {
-        Message message = Message.builder()
-                .role(USER)
-                .content(msg)
-                .build();
 
-        List<Message> messages = new ArrayList<>();
-        messages.add(message);
-
-        return messages;
-    }
 
 }

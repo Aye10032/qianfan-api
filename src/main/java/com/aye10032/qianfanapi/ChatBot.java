@@ -11,11 +11,11 @@ import lombok.Setter;
 import okhttp3.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.aye10032.qianfanapi.data.Data.*;
 import static com.aye10032.qianfanapi.utils.JsonUtil.json2reactiveBody;
-import static com.aye10032.qianfanapi.utils.MessageUtil.newMessage;
 
 /**
  * @program: qianfan-api
@@ -34,10 +34,13 @@ public class ChatBot {
 
     private int type;
 
+    private List<Message> messages;
+
     public ChatBot(int type) {
         this.HTTP_CLIENT = new OkHttpClient().newBuilder().build();
         this.accessToken = AccessToken.GetToken(HTTP_CLIENT, "token.yaml");
         this.type = type;
+        this.messages = new ArrayList<>();
 
         if (type == Data.REACTIVE) {
 
@@ -50,6 +53,7 @@ public class ChatBot {
 
     public ReactiveBody newChat(String msg) {
         List<Message> messages = newMessage(msg);
+        setMessages(messages);
 
         RequestObject object = new RequestObject();
         object.setMessages(messages);
@@ -62,6 +66,16 @@ public class ChatBot {
         List<Message> messages = newMessage(msg);
 
         RequestObject object = new RequestObject(messages, useStream(), temperature, top_p, penalty_score, system, user_id);
+
+        return newChat(object);
+    }
+
+    public ReactiveBody nextChat(String msg) {
+        addQuestion(msg);
+
+        RequestObject object = new RequestObject();
+        object.setMessages(getMessages());
+        object.setStream(useStream());
 
         return newChat(object);
     }
@@ -79,8 +93,10 @@ public class ChatBot {
             Response response = HTTP_CLIENT.newCall(request).execute();
             String result = response.body().string();
 
-            return json2reactiveBody(result);
-//            return new ReactiveBody();
+            ReactiveBody answer = json2reactiveBody(result);
+            addAnswer(answer.getResult());
+
+            return answer;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -88,5 +104,35 @@ public class ChatBot {
 
     private boolean useStream() {
         return getType() == STREAM;
+    }
+
+    public List<Message> newMessage(String msg) {
+        Message message = Message.builder()
+                .role(USER)
+                .content(msg)
+                .build();
+
+        List<Message> messages = new ArrayList<>();
+        messages.add(message);
+
+        return messages;
+    }
+
+    public void addAnswer(String answer) {
+        Message message = Message.builder()
+                .role(ASSISTANT)
+                .content(answer)
+                .build();
+
+        messages.add(message);
+    }
+
+    public void addQuestion(String question){
+        Message message = Message.builder()
+                .role(USER)
+                .content(question)
+                .build();
+
+        messages.add(message);
     }
 }
