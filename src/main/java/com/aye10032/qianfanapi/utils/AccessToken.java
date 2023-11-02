@@ -10,6 +10,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
 
+import static com.aye10032.qianfanapi.data.Data.TOKEN_URL;
+
 /**
  * @program: qianfan-api
  * @description: get token
@@ -19,7 +21,7 @@ import java.util.Map;
 
 public class AccessToken {
 
-    public static String GetToken(String filePath){
+    public static String GetToken(OkHttpClient client, String filePath){
         Yaml yaml = new Yaml();
         try {
             Map<String, Object> config = yaml.load(new FileInputStream(filePath));
@@ -27,20 +29,19 @@ public class AccessToken {
             String client_id = config.get("client_id").toString();
             String client_secret = config.get("client_secret").toString();
 
-            return GetToken(client_id, client_secret);
+            return GetToken(client, client_id, client_secret);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
 
     }
 
-    public static String GetToken(String clientID, String clientSecret){
-        OkHttpClient HTTP_CLIENT = new OkHttpClient().newBuilder().build();
+    public static String GetToken(OkHttpClient client, String clientID, String clientSecret){
 
         MediaType mediaType = MediaType.parse("application/json");
         RequestBody body = RequestBody.create("", mediaType);
         StringBuilder builder = new StringBuilder();
-        builder.append("https://aip.baidubce.com/oauth/2.0/token?client_id=")
+        builder.append(TOKEN_URL)
                 .append(clientID)
                 .append("&client_secret=")
                 .append(clientSecret)
@@ -55,7 +56,7 @@ public class AccessToken {
         Response response = null;
 
         try {
-            response = HTTP_CLIENT.newCall(request).execute();
+            response = client.newCall(request).execute();
             assert response.body() != null;
 
             Gson gson = new Gson();
