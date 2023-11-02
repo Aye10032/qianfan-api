@@ -1,11 +1,7 @@
 package com.aye10032.qianfanapi.utils;
 
-import com.aye10032.qianfanapi.data.ResultVO;
 import com.aye10032.qianfanapi.data.qianfan.ReactiveBody;
 import com.google.gson.Gson;
-
-import java.lang.reflect.Type;
-import java.util.List;
 
 /**
  * @program: rtroapiutil
