@@ -14,7 +14,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @ToString
-public class ReactiveBody {
+public class Chat {
 
     private String id;
     private String object;

@@ -1,6 +1,6 @@
 package com.aye10032.qianfanapi.utils;
 
-import com.aye10032.qianfanapi.data.qianfan.ReactiveBody;
+import com.aye10032.qianfanapi.data.qianfan.Chat;
 import com.google.gson.Gson;
 
 /**
@@ -19,10 +19,10 @@ public class JsonUtil {
         return gson.toJson(data);
     }
 
-    public static ReactiveBody json2reactiveBody(String jsonString) {
+    public static Chat json2reactiveBody(String jsonString) {
         Gson gson = new Gson();
 
-        return gson.fromJson(jsonString, ReactiveBody.class);
+        return gson.fromJson(jsonString, Chat.class);
     }
 
 }

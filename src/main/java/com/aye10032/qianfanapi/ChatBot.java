@@ -2,7 +2,7 @@ package com.aye10032.qianfanapi;
 
 import com.aye10032.qianfanapi.data.Data;
 import com.aye10032.qianfanapi.data.qianfan.Message;
-import com.aye10032.qianfanapi.data.qianfan.ReactiveBody;
+import com.aye10032.qianfanapi.data.qianfan.Chat;
 import com.aye10032.qianfanapi.data.qianfan.RequestObject;
 import com.aye10032.qianfanapi.utils.AccessToken;
 import com.aye10032.qianfanapi.utils.JsonUtil;
@@ -51,7 +51,7 @@ public class ChatBot {
         }
     }
 
-    public ReactiveBody newChat(String msg) {
+    public Chat newChat(String msg) {
         List<Message> messages = newMessage(msg);
         setMessages(messages);
 
@@ -62,7 +62,7 @@ public class ChatBot {
         return newChat(object);
     }
 
-    public ReactiveBody newChat(String msg, float temperature, float top_p, float penalty_score, String system, String user_id) {
+    public Chat newChat(String msg, float temperature, float top_p, float penalty_score, String system, String user_id) {
         List<Message> messages = newMessage(msg);
 
         RequestObject object = new RequestObject(messages, useStream(), temperature, top_p, penalty_score, system, user_id);
@@ -70,7 +70,7 @@ public class ChatBot {
         return newChat(object);
     }
 
-    public ReactiveBody nextChat(String msg) {
+    public Chat nextChat(String msg) {
         addQuestion(msg);
 
         RequestObject object = new RequestObject();
@@ -80,7 +80,7 @@ public class ChatBot {
         return newChat(object);
     }
 
-    public ReactiveBody newChat(RequestObject object) {
+    public Chat newChat(RequestObject object) {
         MediaType mediaType = MediaType.parse("application/json");
         RequestBody body = RequestBody.create(JsonUtil.entity2json(object), mediaType);
 
@@ -91,9 +91,10 @@ public class ChatBot {
                 .build();
         try {
             Response response = HTTP_CLIENT.newCall(request).execute();
+            assert response.body() != null;
             String result = response.body().string();
 
-            ReactiveBody answer = json2reactiveBody(result);
+            Chat answer = json2reactiveBody(result);
             addAnswer(answer.getResult());
 
             return answer;
